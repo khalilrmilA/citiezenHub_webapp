@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
  {% block javascripts %}
-     <script src="{{ asset('js/createScript.js') }}"></script>
+     <script src="{{ asset('js/product.js') }}"></script>
  {% endblock %}
 
 {% block stylesheets %}
@@ -42,6 +42,7 @@
                 <div class="container">
                     <div class="row g-5">
                         <div class="col-lg-3 offset-1 ml_md--0 ml_sm--0">
+                            {% if update == false %}
                             <!-- file upload area -->
                             <div class="upload-area">
                                 <div class="upload-formate mb--30">
@@ -79,6 +80,60 @@
                                 <div id="error-message-image" class="error">
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="upload-area">
+
+                                <div class="upload-formate mb--30">
+                                    <h6 class="title">
+                                        Upload file
+                                    </h6>
+                                    <p class="formate">
+                                        Drag or choose your file to upload
+                                    </p>
+                                </div>
+
+                                <div class="swiper rounded effect-creative-swiper" id="product_images_">
+                                    <input hidden="" name="createinputfile" id="createinputfile" type="file"
+                                           class="inputfile">
+                                    {% if product.images|length == 1 %}
+                                        <div class="brows-file-wrapper">
+
+                                            <img id="createfileImage"
+                                                 src="{{ asset(product.images[0].path) }}" alt=""
+                                                 data-black-overlay="6">
+                                            <!-- our custom upload button -->
+                                            <label for="createinputfile" title="No File Choosen">
+                                                <i class="feather-upload"></i>
+                                                <span class="text-center">Choose a File</span>
+                                                <p class="text-center mt--10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
+                                                    1Gb.</p>
+                                            </label>
+                                        </div>
+                                    {% else %}
+                                    <div class="swiper-wrapper">
+                                        {% for image in product.images %}
+                                        <div class="swiper-slide">
+                                            <div class="brows-file-wrapper">
+
+                                                <img id="createfileImage"
+                                                     src="{{ asset(image.path) }}" alt=""
+                                                     data-black-overlay="6">
+                                                <!-- our custom upload button -->
+                                                <label for="createinputfile" title="No File Choosen">
+                                                    <i class="feather-upload"></i>
+                                                    <span class="text-center">Choose a File</span>
+                                                    <p class="text-center mt--10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
+                                                        1Gb.</p>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    <div class="swiper-pagination"></div>
+                                </div>
+                            </div>
+                            {% endif %}
                             <!-- end upoad file area -->
 
                             <div class="mt--100 mt_sm--30 mt_md--30 d-none d-lg-block">
@@ -147,9 +202,9 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <div class="input-box pb--20 ">
+                                        <!--{# <div class="input-box pb&#45;&#45;20 collection-single-wized">
                                             <label for="category" class="form-label">Category</label>
-                                            <!--{#                                        <input id="Propertie" placeholder="e. g. `Sport`"/> #}-->
+                                            &lt;!&ndash; #}{#         <input id="Propertie" placeholder="e. g. `Sport`"/> #}{# &ndash;&gt;
                                             <select id="category">
                                                 <option value="food" selected>Food</option>
                                                 <option value="sports">Sports</option>
@@ -157,6 +212,18 @@
                                                 <option value="realestate">RealEstate</option>
                                                 <option value="vehicul">Vehicul</option>
                                             </select>
+                                        </div> #}-->
+                                        <div class="collection-single-wized " style="margin-top: -20px !important;">
+                                            <label for="category" class="title">Category</label>
+                                            <div class="create-collection-input">
+                                                <select id="category">
+                                                    <option value="food" selected>Food</option>
+                                                    <option value="sports">Sports</option>
+                                                    <option value="entertainment">Entertainment</option>
+                                                    <option value="realestate">RealEstate</option>
+                                                    <option value="vehicul">Vehicul</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -180,9 +247,15 @@
 
                                     <div class="col-md-12 col-xl-8 mt_lg--15 mt_md--15 mt_sm--15">
                                         <div class="input-box">
+                                            {% if update == true %}
+                                            <button class="btn btn-primary btn-large w-100" onclick="updateProduct({{ product.idProduct }})">
+                                                Update Item
+                                            </button>
+                                            {% else %}
                                             <button class="btn btn-primary btn-large w-100" onclick="createProduct()">
                                                 Submit Item
                                             </button>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -301,7 +374,7 @@
                                     </div>
                                 </div>
                                 <a href="../pages/product-details.html"
-                                ><span class="product-name" ><strong id="name_model">Banana</strong></span></a
+                                ><span class="product-name"><strong id="name_model">Banana</strong></span></a
                                 >
                                 <span class="latest-bid">
                                     <span id="quantity_model">10 Pieces/</span>
@@ -323,5 +396,22 @@
             </div>
         </div>
     </div>
+
+
+    {% if update == true %}
+
+        {% set myProduct = { 'name':product.name,
+            'description':product.description,
+            'price':product.price,
+            'quantity':product.quantity,
+            'category':product.category } %}
+
+        <script>
+            window.onload = function () {
+                var myData = {{ myProduct|json_encode|raw }};
+                initializeUpdate(myData);
+            }
+        </script>
+    {% endif %}
 
 {% endblock %}

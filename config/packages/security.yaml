@@ -16,7 +16,11 @@ security:
         main:
             lazy: true
             provider:  my_custom_provider
+<<<<<<< HEAD
 #            custom_authenticator: App\Security\UserAuthanticatorAuthenticator
+=======
+            custom_authenticator: App\Security\UserAuthanticatorAuthenticator
+>>>>>>> omar_salhi_branch
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -28,9 +32,16 @@ security:
                 path: /
                 always_remember_me: true
 
+<<<<<<< HEAD
             guard:
                 authenticators:
                     - App\Security\GoogleAuthentificator
+=======
+
+#            guard:
+#                authenticators:
+#                    - App\Security\GoogleAuthentificator
+>>>>>>> omar_salhi_branch
 
 
 
@@ -42,7 +53,7 @@ security:
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
-    access_control:
+#    access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

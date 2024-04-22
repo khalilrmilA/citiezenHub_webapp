@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+<<<<<<< HEAD
 use App\Form\RegistrationFormType;
+=======
+>>>>>>> omar_salhi_branch
 use App\Security\UserAuthanticatorAuthenticator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,10 +58,18 @@ class RegistrationController extends AbstractController
                 return  $this->redirectToRoute('app_login');
             }
         }
+<<<<<<< HEAD
         return $this->render('test/signup.html.twig', [
             'name' => $user ? $user->getFirstName() : '',
             'lastName' => $user ? $user->getLastName() : '',
             'email' => $user ? $user->getEmail() : '',
+=======
+        return $this->render('user/signup.html.twig', [
+            'name' => $user ? $user->getFirstName() : '',
+            'lastName' => $user ? $user->getLastName() : '',
+            'email' => $user ? $user->getEmail() : '',
+            'role' => $user ? $user->getRole() : '',
+>>>>>>> omar_salhi_branch
             'errors' => $errors,
         ]);
     }

@@ -2,15 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
-use App\Entity\ProductImages;
 use App\MyHelpers\PaginationHelper;
 use App\Repository\ProductRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/user/dashboard', name: 'app_user_dashboard')]
 class UserDashboardController extends AbstractController
@@ -38,14 +36,16 @@ class UserDashboardController extends AbstractController
             else if($movement_direction != "next" && $movement_direction != "previous")
                 $current_page = $movement_direction;
 
-
             $map[$page]->setCurrentPage($current_page);
             $map[$page]->setPreviousPage($previous_page);
             $session->set('user_products_map', $map);
 
+            $underverif= $page=='unverified';
 
             $template=$this->render('user_dashboard/sub_onsale_products.html.twig', [
-                'products' => $map[$page]->getNProducts(10)
+                'products' => $map[$page]->getNProducts(10),
+                'underverif'=>$underverif,
+                'type'=>$page
             ]);
 
             return new JsonResponse([
@@ -79,6 +79,5 @@ class UserDashboardController extends AbstractController
 //            'current_page' => 1,
 //            'previous_page' => 2,
 //        ]);
-
     }
 }

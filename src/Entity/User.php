@@ -22,29 +22,45 @@ class User implements PasswordAuthenticatedUserInterface,UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+<<<<<<< HEAD
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+=======
+    #[ORM\Column(name:"idUser")]
+    private ?int $idUser = null;
+
+    #[ORM\Column(name:"firstName",length: 255)]
+>>>>>>> omar_salhi_branch
     #[Assert\NotBlank(message: 'Le prénom ne peut pas être vide')]
     #[Assert\Length(
         min:3, minMessage: 'le nom il faut contenir au moi 5 caractere',
     )]
     private ?string $firstName = null;
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255)]
+=======
+    #[ORM\Column(name:"lastName",length: 255)]
+>>>>>>> omar_salhi_branch
     #[Assert\NotBlank(message: 'Le lastname ne peut pas être vide')]
     #[Assert\Length(
         min:5, minMessage: 'le prenon il faut contenir au moi 5 caractere',
     )]
     private ?string $lastName = null;
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255)]
+=======
+    #[ORM\Column(name:"cin",length: 255)]
+>>>>>>> omar_salhi_branch
     private ?string $cin = null;
     /**
      * @Assert\NotBlank(message="Le prénom ne peut pas être vide.")
      * @Assert\Email
      */
+<<<<<<< HEAD
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
@@ -52,15 +68,31 @@ class User implements PasswordAuthenticatedUserInterface,UserInterface
     private ?int $age = null;
 
     #[ORM\Column]
+=======
+    #[ORM\Column(name:"email",length: 255)]
+    private ?string $email = null;
+
+    #[ORM\Column(name:"age")]
+    private ?int $age = null;
+
+    #[ORM\Column(name:"phoneNumber")]
+>>>>>>> omar_salhi_branch
     private ?int $phoneNumber = null;
     #[Assert\NotBlank(message: 'Le lastname ne peut pas être vide')]
     #[Assert\Length(
         min:5, minMessage: 'ladresse il faut contenir au moi 5 caractere',
     )]
+<<<<<<< HEAD
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
 
+=======
+    #[ORM\Column(name:"address",length: 255)]
+    private ?string $address = null;
+
+    #[ORM\Column(name:"role",length: 255)]
+>>>>>>> omar_salhi_branch
     private ?string $role = null;
 
     #[ORM\Column(length: 255)]
@@ -72,22 +104,37 @@ class User implements PasswordAuthenticatedUserInterface,UserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dob = null;
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
     #[ORM\Column(length: 255)]
+=======
+    #[ORM\Column(name:"status",length: 255)]
+    private ?string $status = null;
+
+    #[ORM\Column(name:"image",length: 255)]
+>>>>>>> omar_salhi_branch
     private ?string $image = null;
 
     #[Vich\UploadableField(mapping: 'users', fileNameProperty: 'image')]
     #@Ignore()
     private ?File $imageFile = null;
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255, nullable: true)]
+=======
+    #[ORM\Column(name:"gender",length: 255, nullable: true)]
+>>>>>>> omar_salhi_branch
     private ?string $gender = null;
 
     public function getId(): ?int
     {
+<<<<<<< HEAD
         return $this->id;
+=======
+        return $this->idUser;
+>>>>>>> omar_salhi_branch
     }
 
     public function getFirstName(): ?string

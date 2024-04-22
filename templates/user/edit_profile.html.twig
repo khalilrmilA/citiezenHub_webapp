@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+<<<<<<< HEAD
 {% block test %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -23,6 +24,20 @@
     </div>
     <!-- end page title area -->
 
+=======
+
+{% block stylesheets_wtf %}
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"/>
+
+{% endblock %}
+
+ {% block javascripts %}
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/flatpickr.min.js"></script>
+     <script src="{{ asset('js/userScript.js') }}"></script>
+ {% endblock %}
+
+{% block body %}
+>>>>>>> omar_salhi_branch
 
     <!-- Start tabs area -->
     <div class="edit-profile-area rn-section-gapTop">
@@ -55,6 +70,7 @@
                             <div class="nuron-information">
 
                                 <div class="profile-change row g-5">
+<<<<<<< HEAD
                                     <div class="profile-left col-lg-4">
                                         <div class="profile-image mb--30">
                                             <h6 class="title">Change Your Profile Picture</h6>
@@ -76,6 +92,29 @@
                                             </div>
                                         </div>
                                     </div>
+=======
+{#                                    <div class="profile-left col-lg-4">#}
+{#                                        <div class="profile-image mb--30">#}
+{#                                            <h6 class="title">Change Your Profile Picture</h6>#}
+{#                                            <img id="rbtinput1" src="" alt="Profile-NFT">#}
+{#                                        </div>#}
+{#                                        <div class="button-area">#}
+{#                                            <div class="brows-file-wrapper">#}
+{#                                                <!-- actual upload which is hidden -->#}
+{#                                                <input name="image" id="image" type="file">#}
+{#                                                <!-- our custom upload button -->#}
+{#                                                <label for="image" title="No File Choosen">#}
+{#                                                    <span class="text-center color-white">Upload Profile</span>#}
+{#                                                </label>#}
+{#                                            </div>#}
+{#                                            <div class="button-area save-btn-edit">#}
+{#                                                <button type="submit" id="submit_button" name="submit_button" class="btn btn-primary mr--15" onclick="editImage(event)">Save#}
+{#                                                </button>#}
+
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    </div>#}
+>>>>>>> omar_salhi_branch
 
                                     <div class="profile-left right col-lg-8">
                                         <div class="profile-image mb--30">
@@ -175,8 +214,13 @@
                                              <input  name="cin" id="cin" type="text" value={{ cin }}>
                                          </div>
                                          <div class="last-name half-wid">
+<<<<<<< HEAD
                                              <label class="dob" for="datepicker">Start Date</label>
                                              <input class="form-control datetimepicker" id="datepicker" type="text" placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' />
+=======
+                                             <label class="dob" for="datepicker">Date of birth</label>
+                                             <input class="form-control datetimepicker" id="date" type="date" placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y hh:MM"}' />
+>>>>>>> omar_salhi_branch
                                          </div>
                                      </div>
                                  </div>
@@ -228,7 +272,11 @@
                                     <label for="rePass" class="form-label">Confirm Password</label>
                                     <input name="Password" id="rePass" type="password" value="">
                                 </div>
+<<<<<<< HEAD
                                 <a href="#" class="btn btn-primary save-btn-edit" onclick="customAlert.alert('Successfully Changed Password?')">Save</a>
+=======
+                                <a href="#" class="btn btn-primary save-btn-edit" onclick="editPassword(event)">Save</a>
+>>>>>>> omar_salhi_branch
                             </div>
                             <!-- change password area ENd -->
                         </div>
@@ -357,6 +405,7 @@
 
 
 {% endblock %}
+<<<<<<< HEAD
 {#{% block title %}Hello UserController!{% endblock %}#}
 
 {#{% block body %}#}
@@ -375,3 +424,5 @@
 {#        </ul>#}
 {#    </div>#}
 {#{% endblock %}#}
+=======
+>>>>>>> omar_salhi_branch

@@ -1,0 +1,19 @@
+.form-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.8s ease-in-out;
+}
+
+.form-container.expanded {
+    max-height: 400px; /* Set the desired expanded height */
+}
+
+
+.notifIcon {
+    color: #3EB75E;
+    margin: 0 10px 0 0;
+}
+
+.notifDiv {
+   font-size: 20px;
+}

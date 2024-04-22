@@ -1,7 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets_wtf1 %}
+    <link rel="stylesheet" href="{{ asset('css/wtf.css') }}"/>
+{% endblock %}
+
 {% block javascripts %}
     <script src="{{ asset('js/marketScript.js') }}"></script>
+    <script src="{{ asset('js/basket.js') }}"></script>
 {% endblock %}
 
 {% block body %}

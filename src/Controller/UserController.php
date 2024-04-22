@@ -79,8 +79,13 @@ class UserController extends AbstractController
             $fichierImage = $req->files->get('image');
             $user->setFirstName($name);
             $user->setLastName($lastname);
+<<<<<<< HEAD
             $user->setAge($age);
             $user->setPhoneNumber($phoneNumber);
+=======
+            $user->setAge(intval($age));
+            $user->setPhoneNumber(intval($phoneNumber));
+>>>>>>> omar_salhi_branch
             $user->setCin($cin);
             $user->setRole($role);
             $user->setStatus($status);
@@ -91,8 +96,12 @@ class UserController extends AbstractController
 
             $em->persist($user);
             $em->flush();
+<<<<<<< HEAD
             var_dump($user);
 
+=======
+            $this->addFlash('success', 'Utilisateur modifié avec succès.');
+>>>>>>> omar_salhi_branch
 
             return $this->render('user/edit_profile.html.twig', [
                 'name' =>$user->getFirstName(),
@@ -192,11 +201,16 @@ class UserController extends AbstractController
         ]);
     }
     #[Route('/changePassword', name: 'changePassword',methods: ['GET', 'POST'])]
+<<<<<<< HEAD
     public function changePassword(UserPasswordHasherInterface $userPasswordHasher,ManagerRegistry $doctrine, UserRepository $userRepository, Request $req)
+=======
+    public function changePassword(UserPasswordHasherInterface $userPasswordHasher,ManagerRegistry $doc, UserRepository $userRepository, Request $req)
+>>>>>>> omar_salhi_branch
     {
         $user=$userRepository->findOneBy([ 'email' =>$this->getUser()->getUserIdentifier()]);
         $newPassword =$req->get('newPassword');
         $confirmPassword =$req->get('confirmPassword');
+<<<<<<< HEAD
         $oldPassword = $userPasswordHasher->hashPassword(
             $user,
             $req->get('oldPassword')
@@ -205,16 +219,42 @@ class UserController extends AbstractController
         {
           if(strcmp($newPassword,$confirmPassword))
           {
+=======
+        $oldPassword =$req->get('oldPassword');
+//       $oldPassword = $userPasswordHasher->hashPassword(
+//            $user,
+//            $req->get('oldPassword')
+//        );
+        dump($oldPassword);
+        dump($confirmPassword);
+        if ($userPasswordHasher->isPasswordValid($user, $oldPassword))
+//        if(strcmp($user->getPassword(),$oldPassword)==0)
+        { dump("hrloS");
+          if(strcmp($newPassword,$confirmPassword)==0)
+          {dump("hrxloS");
+>>>>>>> omar_salhi_branch
               $hashedPassword = $userPasswordHasher->hashPassword(
                   $user,
                   $newPassword
               );
               $user->setPassword($hashedPassword);
+<<<<<<< HEAD
 
           }
 
         }
 
+=======
+              $em = $doc->getManager();
+              $em->persist($user);
+              $em->flush();
+
+          }
+
+
+        }
+die();
+>>>>>>> omar_salhi_branch
     }
 
 

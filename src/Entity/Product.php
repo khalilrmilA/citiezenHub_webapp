@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -21,18 +22,25 @@ class Product
     private ?int $idUser = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "aaa")]
+    #[Assert\Regex('/^[a-zA-Z][a-zA-Z0-9\s]*$/')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $descreption = null;
+    #[Assert\NotBlank]
+    private ?string $description = null;
 
     #[ORM\Column(name:"isDeleted",nullable: true)]
     private ?bool $isDeleted = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[1-9]\d{0,10}(,\d{3})*(\.\d{1,2})?$/')]
     private ?float $price = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[1-9]\d{0,10}(,\d{3})*(\.\d{1,2})?$/')]
     private ?float $quantity = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -48,18 +56,16 @@ class Product
     private ?string $category = null;
 
     #[ORM\OneToMany(targetEntity: ProductImages::class, mappedBy: 'product',fetch:"EAGER")]
-//    #[ORM\JoinColumn(name: "idProduct",referencedColumnName:"idProduct")]
     private Collection $images;
+
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'product')]
+    private Collection $transactions;
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
-
-//    #[ORM\OneToMany(targetEntity: ProductImages::class, mappedBy: 'product')]
-//    #[ORM\JoinColumn(name: "productImages",referencedColumnName:"idProduct")]
-//    private Collection $productImages;
-
 
 
     public function getIdProduct(): ?int
@@ -91,15 +97,14 @@ class Product
         return $this;
     }
 
-    public function getDescreption(): ?string
+    public function getDescription(): ?string
     {
-        return $this->descreption;
+        return $this->description;
     }
 
-    public function setDescreption(?string $descreption): static
+    public function setDescription(?string $description): static
     {
-        $this->descreption = $descreption;
-
+        $this->description = $description;
         return $this;
     }
 
@@ -211,6 +216,36 @@ class Product
             // set the owning side to null (unless already changed)
             if ($image->getProduct() === $this) {
                 $image->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getProduct() === $this) {
+                $transaction->setProduct(null);
             }
         }
 
