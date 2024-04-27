@@ -1,39 +1,83 @@
 {% for i,product in products %}
     <!-- start single product -->
-    <div class="col-5 col-lg-4 col-md-6 col-sm-6 col-12" id="product_at_index_{{ i }}">
+    <div class="col-5 col-lg-4 col-md-6 col-sm-6 col-12 " id="product_at_index_{{ i }}">
         <div class="product-style-one no-overlay">
-            <div class="card-thumbnail">
+            <div class="card-thumbnail ">
                 <a href="../pages/product-details.html">
                     {% if product.images|length > 1 %}
-                        <!-- Swiper -->
-                        <div class="swiper effect-creative-swiper rounded"  >
-                            <div class="swiper-wrapper">
-                                {% for image in product.images %}
-                                    <div class="swiper-slide">
-                                        <a href="#"
-                                           onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
-                                            <img src="{{ asset(image.path)|default("Not available") }}"
-                                                 alt="NFT_portfolio"
-                                                 class="fixedImagesSize4owner"/>
-                                        </a>
-                                    </div>
-                                {% endfor %}
+                    <!-- Swiper -->
+                    <div class="swiper effect-creative-swiper rounded">
+                        <div class="swiper-wrapper">
+                            {% for image in product.images %}
+                            <div class="swiper-slide">
+                                <a href="#"
+                                   onclick="document.getElementById('form_details_{{ type }}_{{ i }}').submit(); return false;">
+                                    <img src="{{ asset(image.path)|default("Not available") }}"
+                                         alt="NFT_portfolio"
+                                         class="fixedImagesSize4owner"/>
+                                </a>
                             </div>
-                            <div class="swiper-pagination"></div>
+                            {% endfor %}
                         </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
                     {% else %}
-                        <div >
-                            <a href="#"
-                               onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
-                                <img src="{{ asset(product.images[0].path) }}"
-                                     alt="NFT_portfolio"
-                                     class="fixedImagesSize4owner"
-                                >
-                            </a>
-                        </div>
+                    <div>
+                        <a href="#"
+                           onclick="document.getElementById('form_details_{{ type }}_{{ i }}').submit(); return false;">
+                            <img src="{{ asset(product.images[0].path) }}"
+                                 alt="NFT_portfolio"
+                                 class="fixedImagesSize4owner"
+                            >
+                        </a>
+                    </div>
                     {% endif %}
                 </a>
+                {% if underverif %}
+                {% if aiResult|length > 0 %}
+                {% if aiResult[i] is defined %}
+                {% if aiResult[i].idProduct == product.idProduct %}
+                <div class="countdown" data-date="{{ aiResult[i].getTerminationDateDate() }}"
+                     data-time="{{ aiResult[i].getTerminationDateTime() }}"
+                     data-value="{{ product.iDProduct }}:{{ i }}">
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+                {% endif %}
                 <div class="rbt-quick-action--btns">
+                    {% if underverif %}
+                    <div
+                            class="quickview--box"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="Details">
+                        <a
+                                href="javascript: void(0);"
+                                onclick="showModelUnverfied({{ product.idProduct }},{{ i }},{{ type|json_encode }})"
+                                class="yith-wcqv-button"
+                                data-product_id="793"
+                        >
+                            <i class="fa-solid fa-info"></i>
+                        </a>
+                    </div>
+                    <div
+                            class="quickview--box"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="Buy"
+
+                    >
+
+                        <a
+                                onclick="deleteProduct({{ product.idProduct }},{{ i }},{{ type|json_encode }})"
+                                class="yith-wcqv-button"
+                        >
+                            <i class="fa-regular fa-trash-can" style="font-size: 14px"></i>
+                        </a>
+
+                    </div>
+                    {% else %}
                     <div
                             class="quickview--box"
                             data-bs-toggle="tooltip"
@@ -41,7 +85,7 @@
                             title="Contact Seller">
                         <a
                                 href="#"
-                                onclick="document.getElementById('form_update_{{ i }}').submit(); return false;"
+                                onclick="document.getElementById('form_update_{{ type }}_{{ i }}').submit(); return false;"
                                 class="yith-wcqv-button"
                                 data-product_id="793"
                         >
@@ -64,10 +108,11 @@
                         </a>
 
                     </div>
+                    {% endif %}
                 </div>
             </div>
             {% if underverif %}
-               <!--{# <div class="aiverif">
+                <!--{# <div class="aiverif">
                     <div class="profile-share">
                         <a
                                 class="avatar"
@@ -79,7 +124,7 @@
                             />
                         </a>
                     </div>
-                </div>#}-->
+                </div> #}-->
             {% endif %}
             <div class="product-share-wrapper">
 
@@ -99,7 +144,7 @@
             <div class="bid-react-area m-0 ">
                 <div class="last-bid mt-3 " id="price_model">120 DT</div>
                 {% if underverif %}
-                <div class="product-share-wrapper  " style="margin: 0 !important;">
+                    <!--{#                <div class="product-share-wrapper  " style="margin: 0 !important;">
                     <div class="share-btn share-btn-activation dropdown">
                         <button
                                 class="icon"
@@ -129,23 +174,24 @@
                                     type="button"
                                     class="btn-setting-text report-text"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#reportModal"
+                                    data-bs-target="#reportModald"
                             >
                                 Details
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> #}-->
                 {% endif %}
             </div>
         </div>
-        <form id="form_details_{{ i }}" method="post"
+
+        <form id="form_details_{{ type }}_{{ i }}" method="post"
               action="{{ path('app_product_product_details',{'index': i }) }}">
             <input type="hidden" name="_token_{{ i }}"
                    value="{{ product.idProduct }}">
         </form>
 
-        <form id="form_update_{{ i }}" method="post"
+        <form id="form_update_{{ type }}_{{ i }}" method="post"
               action="{{ path('app_product_edit',{'index': i }) }}">
             <input type="hidden" name="_token_{{ i }}"
                    value="{{ product.idProduct }}">

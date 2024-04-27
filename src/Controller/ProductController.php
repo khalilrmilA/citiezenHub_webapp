@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\AiResult;
+
 use App\Entity\Product;
-use App\MyHelpers\AiResultServes;
-use App\MyHelpers\AiVerification;
+use App\MyHelpers\AiDataHolder;
 use App\MyHelpers\ImageHelper;
 use App\MyHelpers\AiVerificationMessage;
+use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
-use App\Service\AiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
@@ -25,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ProductController extends AbstractController
 {
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
-    public function new(MessageBusInterface $messageBus,Request $request, EntityManagerInterface $entityManager, ImageHelper $imageHelper, ProductRepository $productRepository, ValidatorInterface $validator): Response
+    public function new(MessageBusInterface $messageBus, Request $request, EntityManagerInterface $entityManager, ImageHelper $imageHelper, ProductRepository $productRepository, ValidatorInterface $validator): Response
     {
 
         if ($request->isXmlHttpRequest()) {
@@ -69,23 +68,18 @@ class ProductController extends AbstractController
             $images = $request->files->all();
             $newImagesPath = $imageHelper->saveImages($images, $product);
 
-
-
-            $obj=[
-                'product' => $product,
+            $obj = [
+                'title' => $product->getName(),
+                'category' => $product->getCategory(),
+                'id' => $product->getIdProduct(),
                 'images' => $newImagesPath
             ];
 
             $messageBus->dispatch(new AiVerificationMessage($obj));
-//            $images = $message->getImages();
-//            $aiVerification= new AiVerification();
-//            $res=$aiVerification->run($obj);
-//            var_dump($res);
-
             return new JsonResponse(['state' => 'done'], Response::HTTP_OK);
         }
 
-        return $this->render('market_place/create.html.twig',['update'=>false]);
+        return $this->render('market_place/create.html.twig', ['update' => false]);
     }
 
     #[Route('/generate_description', name: '_show', methods: ['GET', 'POST'])]
@@ -127,29 +121,22 @@ class ProductController extends AbstractController
 
 
     #[Route('/{index}/edit', name: '_edit', methods: ['POST'])]
-    public function edit(ImageHelper $imageHelper,Request $request,ProductRepository $productRepository, EntityManagerInterface $entityManager, int $index): Response
+    public function edit(AiResultRepository $aiResultRepository, MessageBusInterface $messageBus, ImageHelper $imageHelper, Request $request, ProductRepository $productRepository, EntityManagerInterface $entityManager, int $index): Response
     {
-//        $form = $this->createForm(ProductType::class, $product);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $entityManager->flush();
-//
-//            return $this->redirectToRoute('app_market_place_index', [], Response::HTTP_SEE_OTHER);
-//        }
-//
-//        return $this->renderForm('market_place/edit.html.twig', [
-//            'product' => $product,
-//            'form' => $form,
-//        ]);
-        if ($request->isXmlHttpRequest()) {
 
-            $product=$productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
+        if ($request->isXmlHttpRequest()) {
+            $aiResult = $aiResultRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
+            if ($aiResult != null)
+                AiResultController::delete($aiResult, $entityManager);
+
+
+            $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
             $name = $request->get("name");
             $description = $request->get("description");
             $price = $request->get("price");
             $quantity = $request->get("quantity");
             $category = $request->get("category");
+            $imagesNotToDelete = preg_split('/_/', $request->get("savedImages"), -1, PREG_SPLIT_NO_EMPTY);
 
 
             $product->setName($name);
@@ -157,74 +144,113 @@ class ProductController extends AbstractController
             $product->setPrice(floatval($price));
             $product->setQuantity(floatval($quantity));
             $product->setCategory($category);
-         /*   $errors = $validator->validate($updated_product);
+            $product->setState('unverified');
+            /*   $errors = $validator->validate($updated_product);
 
-            if (count($errors) > 0) {
-                $errorMessages = [];
-                foreach ($errors as $error) {
-                    $field = $error->getPropertyPath();
-                    $errorMessages[] = $field;
-                }
-                if (sizeof($request->files->all()) == 0)
-                    $errorMessages[] = 'image';
-                return new JsonResponse(['error' => $errorMessages], Response::HTTP_BAD_REQUEST);
-            }*/
+               if (count($errors) > 0) {
+                   $errorMessages = [];
+                   foreach ($errors as $error) {
+                       $field = $error->getPropertyPath();
+                       $errorMessages[] = $field;
+                   }
+                   if (sizeof($request->files->all()) == 0)
+                       $errorMessages[] = 'image';
+                   return new JsonResponse(['error' => $errorMessages], Response::HTTP_BAD_REQUEST);
+               }*/
 
             $entityManager->flush();
 
             $images = $request->files->all();
-            $newImagesPath = $imageHelper->saveImages($images, $product);
+            $imageHelper->saveImages($images, $product);
+//            $imageHelper->deleteImages($imagesNotToDelete, $product->getImages());
 
-/*            $aiverification=new AiVerification();
-            $desc=$aiverification->run($newImagesPath);
-            return new JsonResponse(['state' => 'done','desc'=>$desc]);*/
+            $product = $productRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
+
+
+            $paths = [];
+            for ($i = 0; $i < sizeof($product->getImages()); $i++) {
+                $paths[] = str_replace('usersImg/', '', $product->getImages()[$i]->getPath());
+            }
+
+            $obj = [
+                'title' => $product->getName(),
+                'category' => $product->getCategory(),
+                'id' => $product->getIdProduct(),
+                'images' => $paths
+            ];
+
+//            $messageBus->dispatch(new AiVerificationMessage($obj));
+
             return new JsonResponse(['state' => 'done'], Response::HTTP_OK);
         }
 
-        $product=$productRepository->findOneBy(['idProduct' => $request->get('_token_' . $index)]);
+        $product = $productRepository->findOneBy(['idProduct' => $request->get('_token_' . $index)]);
 
-        return $this->render('market_place/create.html.twig',[
+        return $this->render('market_place/create.html.twig', [
             'product' => $product,
-            'update'=>true]);
+            'update' => true
+        ]);
+    }
+
+
+    #[Route('/test', name: 'test', methods: ['POST', 'GET'])]
+    public static function changeState(AiResultRepository $aiResultRepository,ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
+    {
+        for ($i = 0; $i < sizeof($aiDataHolder->getDescriptions()); $i++) {
+            if (str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
+                return new Response('done', Response::HTTP_OK);
+        }
+
+        $product = $productRepository->findOneBy(['idProduct' => $idProduct]);
+        $product->setState('verified');
+        $entityManager->flush();
+        $aiResult = $aiResultRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
+        if ($aiResult != null)
+            AiResultController::delete($aiResult, $entityManager);
+        return new Response('done', Response::HTTP_OK);
     }
 
     #[Route('/delete', name: '_delete', methods: ['POST'])]
-    public function delete(Request $request, EntityManagerInterface $entityManager,ProductRepository $productRepository): Response
+    public function delete(AiResultRepository $aiResultRepository, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository): Response
     {
         $session = $request->getSession();
         if ($request->isXmlHttpRequest()) {
 
-            $prod2Remove=$productRepository->findOneBy(['idProduct' => $request->get('id')]);
+            $aiResult = $aiResultRepository->findOneBy(['idProduct' => $request->get('id')]);
+            if ($aiResult != null)
+                AiResultController::delete($aiResult, $entityManager);
+
+            $prod2Remove = $productRepository->findOneBy(['idProduct' => $request->get('id')]);
 
             $entityManager->remove($prod2Remove);
             $entityManager->flush();
 
             $page = $request->get("type");
-            $map=$session->get('user_products_map');
+            $map = $session->get('user_products_map');
 
-            if($page=='on_sale')
-                $state='verified';
+            if ($page == 'on_sale')
+                $state = 'verified';
             else
-                $state='unverified';
+                $state = 'unverified';
 
-            $map[$page]->setProducts($productRepository->findBy(['isDeleted' => false,'state' => $state]));
+            $map[$page]->setProducts($productRepository->findBy(['isDeleted' => false, 'state' => $state]));
 
             $session->set('user_products_map', $map);
 
-            return new JsonResponse(['page'=>$map[$page]->getCurrentPage()]);
+            return new JsonResponse(['page' => $map[$page]->getCurrentPage()]);
         }
         return new Response('something went wrong', Response::HTTP_BAD_REQUEST);
     }
 
 
-    #[Route('/test', name: 'test', methods: ['POST','GET'])]
-    public function test(): Response
-    {
-        $aiResult = new AiResult();
-        $aiResult->setBody('qfdgqrfg');
-        $entityManager = $this->get('doctrine')->getManager();
-        $entityManager->persist($aiResult);
-        $entityManager->flush();
-        return new JsonResponse($aiResult);
-    }
+//    #[Route('/test', name: 'test', methods: ['POST', 'GET'])]
+//    public function test(): Response
+//    {
+//        $aiResult = new AiResult();
+//        $aiResult->setBody('qfdgqrfg');
+//        $entityManager = $this->get('doctrine')->getManager();
+//        $entityManager->persist($aiResult);
+//        $entityManager->flush();
+//        return new JsonResponse($aiResult);
+//    }
 }

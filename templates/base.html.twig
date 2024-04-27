@@ -290,6 +290,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Protest+Riot&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
           rel="stylesheet">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.12/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.12/dist/css/splide.min.css">
     <meta name="robots" content="noindex, follow"/>
     <meta name="description" content=""/>
     <meta
@@ -3180,6 +3184,10 @@
 <script src="assets/js/vendor/maralis.js"></script>
 <script src="assets/js/vendor/nft.js"></script>
 >>>>>>> 3bcd74b9b51bdfb047c138b3f1d8effe58faedb5
+
+{% block scripts %}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
 
 </body>
 

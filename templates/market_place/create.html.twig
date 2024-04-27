@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 
+
  {% block javascripts %}
-     <script src="{{ asset('js/product.js') }}"></script>
+     {#     <script src="{{ asset('js/product.js') }}"></script> #}
  {% endblock %}
 
 {% block stylesheets %}
@@ -12,7 +13,6 @@
 {% endblock %}
 
 {% block body %}
-
 
 
     <div>
@@ -43,100 +43,178 @@
                     <div class="row g-5">
                         <div class="col-lg-3 offset-1 ml_md--0 ml_sm--0">
                             {% if update == false %}
-                            <!-- file upload area -->
-                            <div class="upload-area">
-                                <div class="upload-formate mb--30">
-                                    <h6 class="title">Upload file</h6>
-                                    <p class="formate">Drag or choose your file to upload</p>
-                                </div>
+                                <!-- file upload area -->
+                                <div class="upload-area">
+                                    <div class="upload-formate mb--30">
+                                        <h6 class="title">Upload file</h6>
+                                        <p class="formate">Drag or choose your file to upload</p>
+                                    </div>
 
-                                <div class="brows-file-wrapper">
-                                    <!-- actual upload which is hidden -->
-                                    <input
-                                            name="createinputfile"
-                                            id="createinputfile"
-                                            type="file"
-                                            class="inputfile"
-                                            multiple
-                                    />
-                                    <img
-                                            id="createfileImage"
-                                            src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
-                                            alt=""
-                                            data-black-overlay="6"
-                                    />
+                                    <div class="brows-file-wrapper">
+                                        <!-- actual upload which is hidden -->
+                                        <input
+                                                name="createinputfile"
+                                                id="createinputfile"
+                                                type="file"
+                                                class="inputfile"
+                                                multiple
+                                        />
+                                        <img
+                                                id="createfileImage"
+                                                src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
+                                                alt=""
+                                                data-black-overlay="6"
+                                        />
 
-                                    <!-- our custom upload button -->
-                                    <label for="createinputfile" title="No File Choosen">
-                                        <i class="feather-upload"></i>
-                                        <span class="text-center">Choose a File</span>
-                                        <p class="text-center mt&#45;&#45;10">
-                                            PNG, GIF, WEBP, MP4 or MP3. <br/>
-                                            Max 1Gb.
-                                        </p>
-                                    </label>
+                                        <!-- our custom upload button -->
+                                        <label for="createinputfile" title="No File Choosen">
+                                            <i class="feather-upload"></i>
+                                            <span class="text-center">Choose a File</span>
+                                            <p class="text-center mt&#45;&#45;10">
+                                                PNG, GIF, WEBP, MP4 or MP3. <br/>
+                                                Max 1Gb.
+                                            </p>
+                                        </label>
 
+
+                                    </div>
+                                    <div id="error-message-image" class="error">
+                                    </div>
                                 </div>
-                                <div id="error-message-image" class="error">
-                                </div>
-                            </div>
                             {% else %}
-                            <div class="upload-area">
+                                <div class="upload-area">
 
-                                <div class="upload-formate mb--30">
-                                    <h6 class="title">
-                                        Upload file
-                                    </h6>
-                                    <p class="formate">
-                                        Drag or choose your file to upload
-                                    </p>
-                                </div>
-
-                                <div class="swiper rounded effect-creative-swiper" id="product_images_">
-                                    <input hidden="" name="createinputfile" id="createinputfile" type="file"
-                                           class="inputfile">
-                                    {% if product.images|length == 1 %}
-                                        <div class="brows-file-wrapper">
-
-                                            <img id="createfileImage"
-                                                 src="{{ asset(product.images[0].path) }}" alt=""
-                                                 data-black-overlay="6">
-                                            <!-- our custom upload button -->
-                                            <label for="createinputfile" title="No File Choosen">
-                                                <i class="feather-upload"></i>
-                                                <span class="text-center">Choose a File</span>
-                                                <p class="text-center mt--10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
-                                                    1Gb.</p>
-                                            </label>
-                                        </div>
-                                    {% else %}
-                                    <div class="swiper-wrapper">
-                                        {% for image in product.images %}
-                                        <div class="swiper-slide">
+                                    <div class="upload-formate mb--30">
+                                        <h6 class="title">
+                                            Upload file
+                                        </h6>
+                                        <p class="formate">
+                                            Drag or choose your file to upload
+                                        </p>
+                                    </div>
+                                    <!--                                        this-->
+                                    <!--{# <div class="swiper rounded effect-creative-swiper" id="product_images_">
+                                        <input hidden="" name="createinputfile" id="createinputfile" type="file"
+                                               class="inputfile">
+                                        {% if product.images|length == 1 %}
                                             <div class="brows-file-wrapper">
-
                                                 <img id="createfileImage"
-                                                     src="{{ asset(image.path) }}" alt=""
+                                                     src="{{ asset(product.images[0].path) }}" alt=""
                                                      data-black-overlay="6">
-                                                <!-- our custom upload button -->
+                                                &lt;!&ndash; our custom upload button &ndash;&gt;
                                                 <label for="createinputfile" title="No File Choosen">
                                                     <i class="feather-upload"></i>
                                                     <span class="text-center">Choose a File</span>
-                                                    <p class="text-center mt--10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
+                                                    <p class="text-center mt&#45;&#45;10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
                                                         1Gb.</p>
                                                 </label>
                                             </div>
+                                        {% else %}
+                                            <div class="swiper-wrapper" id="swiperContainer">
+                                                {% for index,image in product.images %}
+                                                    <div class="swiper-slide swiper_{{ index }}">
+                                                        <div class="brows-file-wrapper">
+                                                            <img id="createfileImage"
+                                                                 src="{{ asset(image.path) }}" alt=""
+                                                                 data-black-overlay="6"
+                                                            >
+                                                            <label for="" title="No File Choosen"
+                                                                   class="updateImageLabel_{{ index }}"
+                                                                   id="updateImageLabel_{{ index }}">
+                                                                <button type="button"
+                                                                        name="deleteBtns"
+                                                                        style="border: none !important;"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#confirmModel"
+                                                                        data-value="{{ index }}">
+                                                                    <i class="fa-regular fa-trash-can"></i>
+                                                                </button>
+                                                                <span class="text-center">Delete a File</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="swiper-pagination" id="paginationContent"></div>
+                                    </div> #}-->
+
+                                    {% if product.images|length <= 1 %}
+                                    <input hidden="" name="createinputfile" id="createinputfile" type="file"
+                                           class="inputfile" multiple>
+                                    <div class="brows-file-wrapper">
+                                        <img id="createfileImage"
+                                             src="{{ asset(product.images[0].path) }}" alt=""
+                                             data-black-overlay="6">
+                                        <!-- our custom upload button -->
+                                        <label for="createinputfile" title="No File Choosen">
+                                            <i class="feather-upload"></i>
+                                            <span class="text-center">Choose a File</span>
+                                            <p class="text-center mt--10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
+                                                1Gb.</p>
+                                        </label>
+                                    </div>
+                                    {% else %}
+                                    <div id="image-slider" class="splide">
+                                        <input hidden="" name="createinputfile" id="createinputfile" type="file"
+                                               class="inputfile" multiple>
+                                        <div class="splide__track">
+                                            <ul class="splide__list">
+                                                {% for index,image in product.images %}
+                                                <li class="splide__slide slider_{{ index }}"
+                                                    data-value="{{ image.getIdImage() }}">
+                                                    <div class="brows-file-wrapper">
+                                                        <img id="createfileImage"
+                                                             src="{{ asset(image.path) }}" alt=""
+                                                             data-black-overlay="6"
+                                                        >
+                                                        <label for="" title="No File Choosen"
+                                                               class="updateImageLabel_{{ index }}"
+                                                               id="updateImageLabel_{{ index }}">
+                                                            <button type="button"
+                                                                    name="deleteBtns"
+                                                                    style="border: none !important;"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#confirmModel"
+                                                                    data-value="{{ index }}">
+                                                                <i class="fa-regular fa-trash-can"></i>
+                                                            </button>
+                                                            <span class="text-center">Delete a File</span>
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
                                         </div>
-                                        {% endfor %}
                                     </div>
                                     {% endif %}
-                                    <div class="swiper-pagination"></div>
+                                    <input type="hidden" value="{{ product.images|length }}" id="nbrImages">
                                 </div>
-                            </div>
-                            {% endif %}
-                            <!-- end upoad file area -->
+                                <div class="mt--50 mt_sm--30 mt_md--30 d-none d-lg-block">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="input-box rn-check-box">
+                                                <input class="rn-check-box-input" type="checkbox" id="deleteImage" checked>
+                                                <label class="rn-check-box-label" for="deleteImage">
+                                                    Delete Image
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="input-box  rn-check-box">
+                                                <input class="rn-check-box-input" type="checkbox" id="uploadImage">
+                                                <label class="rn-check-box-label" for="uploadImage">
+                                                    Upload Image
+                                                </label>
+                                            </div>
+                                        </div>
 
-                            <div class="mt--100 mt_sm--30 mt_md--30 d-none d-lg-block">
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- end upoad file area -->
+                            <div class="mt--50 mt_sm--30 mt_md--30 d-none d-lg-block">
                                 <h5>Note:</h5>
                                 <span><strong>Click The Ai Button And You Will Get A Generated Description Of The Product Based On Its Title</strong></span
                                 >
@@ -152,6 +230,9 @@
                                             <input
                                                     id="name"
                                                     placeholder="e. g. `Digital Awesome Game`"
+                                                    {% if update %}
+                                                        value="{{ product.name }}"
+                                                    {% endif %}
                                             />
                                             <div id="error-message" class="error">
                                             </div>
@@ -175,6 +256,7 @@
                                                     placeholder="e. g. “After purchasing the product you can get item...”"
                                                     style="min-height: 200px;"
                                                     class=""
+
                                             ></textarea>
                                             <div id="error-message-desc" class="error">
                                             </div>
@@ -186,7 +268,11 @@
                                             <label for="price" class="form-label"
                                             >Item Price in Dt</label
                                             >
-                                            <input id="price" placeholder="e. g. `20Dt`"/>
+                                            <input id="price" placeholder="e. g. `20Dt`"
+                                                    {% if update %}
+                                                        value="{{ product.price }} Dt"
+                                                    {% endif %}
+                                            />
                                             <div id="error-message-price" class="error">
                                             </div>
                                         </div>
@@ -195,7 +281,11 @@
                                     <div class="col-md-4">
                                         <div class="input-box pb--20">
                                             <label for="quantity" class="form-label">Quantity</label>
-                                            <input id="quantity" placeholder="e. g. `10`"/>
+                                            <input id="quantity" placeholder="e. g. `10`"
+                                                    {% if update %}
+                                                        value="{{ product.quantity }}"
+                                                    {% endif %}
+                                            />
                                             <div id="error-message-quantity" class="error">
                                             </div>
                                         </div>
@@ -217,11 +307,61 @@
                                             <label for="category" class="title">Category</label>
                                             <div class="create-collection-input">
                                                 <select id="category">
-                                                    <option value="food" selected>Food</option>
-                                                    <option value="sports">Sports</option>
-                                                    <option value="entertainment">Entertainment</option>
-                                                    <option value="realestate">RealEstate</option>
-                                                    <option value="vehicul">Vehicul</option>
+
+                                                    {% if update %}
+                                                        value="{{ product.name }}"
+                                                        {% if  product.category=="food" %}
+                                                            <option value="{{ product.category }}"
+                                                                    selected>{{ product.category|capitalize }}</option>
+                                                            <option value="sports">Sports</option>
+                                                            <option value="entertainment">Entertainment</option>
+                                                            <option value="realestate">RealEstate</option>
+                                                            <option value="vehicul">Vehicul</option>
+                                                        {% endif %}
+
+                                                        {% if  product.category=="sports" %}
+                                                            <option value="food">Food</option>
+                                                            <option value="{{ product.category }}"
+                                                                    selected>{{ product.category|capitalize }}</option>
+                                                            <option value="entertainment">Entertainment</option>
+                                                            <option value="realestate">RealEstate</option>
+                                                            <option value="vehicul">Vehicul</option>
+                                                        {% endif %}
+
+                                                        {% if  product.category=="entertainment" %}
+                                                            <option value="food">Food</option>
+                                                            <option value="sports">Sports</option>
+                                                            <option value="{{ product.category }}"
+                                                                    selected>{{ product.category|capitalize }}</option>
+                                                            <option value="realestate">RealEstate</option>
+                                                            <option value="vehicul">Vehicul</option>
+                                                        {% endif %}
+
+                                                        {% if  product.category=="realestate" %}
+                                                            <option value="food">Food</option>
+                                                            <option value="sports">Sports</option>
+                                                            <option value="entertainment">Entertainment</option>
+                                                            <option value="{{ product.category }}"
+                                                                    selected>{{ product.category|capitalize }}</option>
+                                                            <option value="vehicul">Vehicul</option>
+                                                        {% endif %}
+
+                                                        {% if  product.category=="vehicul" %}
+                                                            <option value="food">Food</option>
+                                                            <option value="sports">Sports</option>
+                                                            <option value="entertainment">Entertainment</option>
+                                                            <option value="realestate">Realestate</option>
+                                                            <option value="{{ product.category }}"
+                                                                    selected>{{ product.category|capitalize }}</option>
+                                                        {% endif %}
+
+                                                    {% else %}
+                                                        <option value="food" selected>Food</option>
+                                                        <option value="sports">Sports</option>
+                                                        <option value="entertainment">Entertainment</option>
+                                                        <option value="realestate">RealEstate</option>
+                                                        <option value="vehicul">Vehicul</option>
+                                                    {% endif %}
                                                 </select>
                                             </div>
                                         </div>
@@ -248,13 +388,17 @@
                                     <div class="col-md-12 col-xl-8 mt_lg--15 mt_md--15 mt_sm--15">
                                         <div class="input-box">
                                             {% if update == true %}
-                                            <button class="btn btn-primary btn-large w-100" onclick="updateProduct({{ product.idProduct }})">
-                                                Update Item
-                                            </button>
+                                                <a class="btn btn-primary btn-large w-100"
+                                                   onclick="updateProduct({{ product.idProduct }})"
+                                                   >
+                                                    Update Item
+                                                </a>
                                             {% else %}
-                                            <button class="btn btn-primary btn-large w-100" onclick="createProduct()">
-                                                Submit Item
-                                            </button>
+                                                <button class="btn btn-primary btn-large w-100"
+                                                        onclick="createProduct()"
+                                                >
+                                                    Submit Item
+                                                </button>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -398,20 +542,66 @@
     </div>
 
 
-    {% if update == true %}
 
-        {% set myProduct = { 'name':product.name,
-            'description':product.description,
-            'price':product.price,
-            'quantity':product.quantity,
-            'category':product.category } %}
 
+    <!-- Modal -->
+    <div
+            class="rn-popup-modal report-modal-wrapper modal fade"
+            id="confirmModel"
+            tabindex="-1"
+            aria-hidden="true"
+    >
+        <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+        >
+            <i data-feather="x"></i>
+        </button>
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content report-content-wrapper">
+                <div class="modal-header report-modal-header align-self-center">
+                    <h2 class="modal-title" style="color: #2899d8">Confirmation</h2>
+                </div>
+                <div class="modal-body overflow-hidden align-content-center">
+                    <p class="title">
+                        Are you sure you want to delete this image
+                    </p>
+                    <div class="report-form-box">
+                        <div class="d-flex gap-2 justify-content-end me-0">
+                            <button type="button" class="btn btn-primary mr&#45;&#45;10 w-auto"
+                                    onclick="deleteImage()">
+                                Yes
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-primary-alta w-auto"
+                                    data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="modelValue">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+    {% if update %}
         <script>
             window.onload = function () {
-                var myData = {{ myProduct|json_encode|raw }};
-                initializeUpdate(myData);
+                $('#description').val({{ product.description|json_encode|raw }});
             }
         </script>
     {% endif %}
-
+    <script src="{{ asset('js/product.js') }}"></script>
 {% endblock %}
